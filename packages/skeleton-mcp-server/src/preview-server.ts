@@ -1,5 +1,5 @@
 import http from 'http';
-import type { ServerResponse } from 'http';
+import type { IncomingMessage, ServerResponse } from 'http';
 
 const SSE_SCRIPT = `<script>
 (function() {
@@ -22,7 +22,7 @@ export class PreviewServer {
   private server: http.Server;
 
   constructor() {
-    this.server = http.createServer((req, res) => {
+    this.server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
       if (req.url === '/events') {
         res.writeHead(200, {
           'Content-Type': 'text/event-stream',
@@ -79,7 +79,7 @@ export class PreviewServer {
     }
     this.sseClients.clear();
     return new Promise((resolve, reject) => {
-      this.server.close((err) => {
+      this.server.close((err?: Error) => {
         if (err) reject(err);
         else resolve();
       });
